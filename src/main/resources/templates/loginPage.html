@@ -66,11 +66,12 @@
       <form th:action="@{/login}" method="post">
         <div class="form-group">
           <label for="phoneNumber" class="sr-only">Номер телефона:</label>
-          <input type="tel" id="phoneNumber" name="phoneNumber" class="form-control" placeholder="Введите номер телефона" required autofocus/>
+          <input type="tel" id="phoneNumber" name="phoneNumber" class="form-control" placeholder="Введите номер телефона" required autofocus aria-label="Номер телефона" aria-describedby="phone-number-description" />
+          <small id="phone-number-description" class="form-text text-muted">Введите номер телефона в формате: +XXXXXXXXXXX</small>
         </div>
         <div class="form-group">
           <label for="password" class="sr-only">Пароль:</label>
-          <input type="password" id="password" name="password" class="form-control" placeholder="Пароль" required/>
+          <input type="password" id="password" name="password" class="form-control" placeholder="Пароль" required aria-label="Пароль" />
         </div>
         <div class="form-group">
           <button type="submit" class="btn btn-primary btn-block">Войти</button>

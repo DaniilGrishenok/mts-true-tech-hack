@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>My Accounts</title>
+    <title>Мои счета</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom Styles -->
+    <!-- Пользовательские стили -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -35,15 +35,13 @@
             color: #ffffff;
         }
 
-
-
         .card {
             border-radius: 10px;
             box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
         }
 
         .card-header {
-            background-color: #ff001c; /* Red */
+            background-color: #ff001c; /* Красный */
             color: white;
             text-align: center;
             padding: 15px 0;
@@ -56,7 +54,7 @@
         }
 
         .btn-create {
-            background-color: #ff0019; /* Red */
+            background-color: #ff0019; /* Красный */
             color: white;
             border: none;
             border-radius: 5px;
@@ -69,20 +67,18 @@
         }
 
         .modal-header {
-            background-color: #ff0019; /* Red */
+            background-color: #ff0019; /* Красный */
             color: white;
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
         }
-
-
     </style>
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
     <div class="container">
-        <a class="navbar-brand" href="/">MTS Bank</a>
+        <a class="navbar-brand" href="/">МТС Банк</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -90,16 +86,16 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/accountsPage">My Accounts</a>
+                    <a class="nav-link" href="/accountsPage">Мои счета</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Transaction History</a>
+                    <a class="nav-link" href="#">История транзакций</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/paymentsAndTransfers">Payments and Transfers</a>
+                    <a class="nav-link" href="/paymentsAndTransfers">Платежи и переводы</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Log Out</a>
+                    <a class="nav-link" href="#">Выйти</a>
                 </li>
             </ul>
         </div>
@@ -117,13 +113,13 @@
             <div th:each="account, iterStat : ${accounts}" class="account-card mb-4">
                 <div th:if="${account.name == 'Main Account'}" class="card">
                     <div class="card-header bg-dark text-light">
-                        <h5 class="mb-0">Main Account</h5>
+                        <h5 class="mb-0">Главный счет</h5>
                     </div>
                     <div class="card-body">
                         <p class="card-text">
                             <span>Номер счета: <span th:text="${account.id}"></span></span><br>
                             <span th:text="${account.balance}" class="font-weight-bold"></span>
-                            <span th:text="${account.currencyType == 'YUAN' ? 'yuan' : 'руб'}" class="font-weight-bold"></span>
+                            <span th:text="${account.currencyType == 'YUAN' ? 'юан' : 'руб'}" class="font-weight-bold"></span>
                         </p>
                     </div>
                 </div>
@@ -138,19 +134,16 @@
                         <p class="card-text">
                             <span th:text="'Номер счета: ' + ${account.id}"></span><br>
                             <span th:text="${account.balance}" class="font-weight-bold"></span>
-                            <span th:text="${account.currencyType == 'YUAN' ? 'yuan' : 'руб'}" class="font-weight-bold"></span>
+                            <span th:text="${account.currencyType == 'YUAN' ? 'юан' : 'руб'}" class="font-weight-bold"></span>
                         </p>
                     </div>
                 </div>
             </div>
         </div>
 
-
         <div class="card-body">
             <!-- Кнопки для создания различных типов счетов -->
-            <button type="button" class="btn btn-create" data-toggle="modal" data-target="#modalCreateAccount">Создать накопительный счет</button>
-            <button type="button" class="btn btn-create" data-toggle="modal" data-target="#modalCreateDepositAccount">Создать сберегательный счет</button>
-            <button type="button" class="btn btn-create" data-toggle="modal" data-target="#modalCreateMainAccount">Создать основной счет</button>
+            <button type="button" class="btn btn-create" data-toggle="modal" data-target="#modalCreateAccount" aria-label="Создать счет">Создать накопительный счет</button>
 
             <!-- Модальное окно для выбора валюты -->
             <div class="modal fade" id="modalCreateAccount" tabindex="-1" aria-labelledby="modalCreateAccountLabel" aria-hidden="true">
@@ -158,7 +151,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="modalCreateAccountLabel">Создание счета</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Закрыть">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
@@ -178,7 +171,7 @@
                                         <option value="YUAN">Юань</option>
                                     </select>
                                 </div>
-                                <!-- Add a hidden input field to include the Principal object -->
+                                <!-- Добавляем скрытое поле ввода, чтобы включить объект Principal -->
                                 <input type="hidden" name="username" th:value="${#httpServletRequest.userPrincipal.name}" />
                                 <button type="submit" class="btn btn-primary">Создать</button>
                             </form>

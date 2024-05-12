@@ -39,7 +39,7 @@ public class SpeechController {
             return ResponseEntity.ok(REQUEST_PAYMENT_TYPE_MESSAGE);
         } else if (isWaitingForPaymentType) {
             isWaitingForPaymentType = false;
-            if (text.equals("жкх") || text.equals("штрафы") || text.equals("налоги")) {
+            if (text.contains("жкх") || text.contains("штрафы") || text.contains("налоги")){
                 isWaitingForPaymentAmount = true;
                 return ResponseEntity.ok(REQUEST_PAYMENT_AMOUNT_MESSAGE);
             } else {
@@ -102,9 +102,9 @@ public class SpeechController {
         }
     }
 
-    // Метод для проверки валидности номера телефона
+
     private boolean isValidPhoneNumber(String phoneNumber) {
-        // Ваша реализация проверки валидности номера телефона
+
         return true; // Пример: всегда возвращает true для простоты демонстрации
     }
 }

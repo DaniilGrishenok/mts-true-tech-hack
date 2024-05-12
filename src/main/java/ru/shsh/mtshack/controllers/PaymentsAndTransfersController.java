@@ -25,8 +25,8 @@ public class PaymentsAndTransfersController {
     @PostMapping("/payForService")
     public String payForService(@RequestParam("service") String service,
                                 @RequestParam("amount") Double amount) {
-        // Здесь может быть логика обработки платежа за услугу
-        return "redirect:/paymentsAndTransfers"; // Перенаправляем обратно на страницу платежей и переводов
+
+        return "redirect:/paymentsAndTransfers";
     }
 
     @PostMapping("/transferToUser")

@@ -21,6 +21,7 @@ public class SpeechController {
     private static final String PAYMENT_ERROR_MESSAGE = "Ошибка при выполнении платежа.";
     private static final String REQUEST_RECIPIENT_PHONE_MESSAGE = "Введите номер телефона получателя:";
     private static final String REQUEST_TRANSFER_AMOUNT_MESSAGE = "Введите сумму перевода:";
+    private static final String INVALID_PHONE_NUMBER_MESSAGE = "Неправильный номер телефона. Пожалуйста, введите номер еще раз.";
 
     private boolean isWaitingForPaymentType = false;
     private boolean isWaitingForPaymentAmount = false;
@@ -46,7 +47,12 @@ public class SpeechController {
             }
         } else if (isWaitingForPaymentAmount) {
             isWaitingForPaymentAmount = false;
-            double amount = Double.parseDouble(text);
+            double amount;
+            try {
+                amount = Double.parseDouble(text);
+            } catch (NumberFormatException e) {
+                return ResponseEntity.ok("Неверный формат суммы. Пожалуйста, введите числовое значение.");
+            }
             senderPhoneNumber = userService.getUserId();
             double balance = userService.getAccountBalanceByPhoneNumber(senderPhoneNumber);
             if (balance >= amount) {
@@ -66,13 +72,22 @@ public class SpeechController {
         } else if (isWaitingForRecipientPhoneNumber) {
             isWaitingForRecipientPhoneNumber = false;
             recipientPhoneNumber = text;
+            // Проверка валидности номера телефона
+            if (!isValidPhoneNumber(recipientPhoneNumber)) {
+                return ResponseEntity.ok(INVALID_PHONE_NUMBER_MESSAGE);
+            }
             isWaitingForTransferAmount = true;
             return ResponseEntity.ok(REQUEST_TRANSFER_AMOUNT_MESSAGE);
         } else if (isWaitingForTransferAmount) {
             isWaitingForTransferAmount = false;
-            double amount = Double.parseDouble(text); // Получаем сумму перевода
-            String senderPhoneNumber = userService.getUserId();
-            boolean transferResult = userService.transferToUser(senderPhoneNumber,recipientPhoneNumber , amount);
+            double amount;
+            try {
+                amount = Double.parseDouble(text);
+            } catch (NumberFormatException e) {
+                return ResponseEntity.ok("Неверный формат суммы. Пожалуйста, введите числовое значение.");
+            }
+            senderPhoneNumber = userService.getUserId();
+            boolean transferResult = userService.transferToUser(senderPhoneNumber, recipientPhoneNumber, amount);
             if (transferResult) {
                 return ResponseEntity.ok("Перевод выполнен успешно!");
             } else {
@@ -85,5 +100,11 @@ public class SpeechController {
         } else {
             return ResponseEntity.ok("Извините, я вас не понял. Пожалуйста, повторите запрос.");
         }
+    }
+
+    // Метод для проверки валидности номера телефона
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        // Ваша реализация проверки валидности номера телефона
+        return true; // Пример: всегда возвращает true для простоты демонстрации
     }
 }

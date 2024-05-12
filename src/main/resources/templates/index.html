@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,7 @@
 
     <style>
         body {
-            background-color: #e3dada;
+            background-color: #ffffff;
         }
 
         .navbar {
@@ -21,9 +21,16 @@
         .navbar-dark .navbar-brand {
             color: #ffffff;
         }
-
-        .navbar-dark .navbar-nav .nav-link {
-            color: #ffffff;
+        .navbar-nav .nav-link {
+            color: #ffffff !important; /* Начальный цвет текста - светло-серый */
+        }
+        .navbar-nav .nav-link:hover {
+            color: #ffffff; /* Цвет текста при наведении - белый */
+        }
+        .navbar-brand,
+        .navbar-nav .nav-link {
+            font-family: Arial, sans-serif; /* Шрифт Arial или любой другой sans-serif шрифт */
+            font-weight: bold; /* Жирное начертание */
         }
 
         .navbar-dark .navbar-nav .nav-link:hover {
@@ -70,7 +77,49 @@
             50% { opacity: 0; }
             100% { opacity: 1; }
         }
+        /* Медиа-запрос для мобильных устройств */
+        @media (max-width: 576px) {
+            .section {
+                padding: 20px; /* Уменьшаем внутренний отступ блока */
+            }
+        }
+        .containers {
+            margin-top: 50px; /* Отступ сверху */
+        }
 
+        .section {
+            background-color: #ffffff; /* Цвет фона блока */
+            padding: 30px; /* Внутренний отступ блока */
+            border-radius: 10px; /* Скругление углов блока */
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1); /* Тень блока */
+            margin-bottom: 30px; /* Отступ снизу блока */
+        }
+
+        .section-title {
+            font-size: 24px; /* Размер заголовка блока */
+            font-weight: bold; /* Жирный текст */
+            margin-bottom: 20px; /* Отступ снизу заголовка блока */
+        }
+
+        .section-content {
+            font-size: 16px; /* Размер текста */
+            line-height: 1.6; /* Межстрочный интервал */
+            color: #333333; /* Цвет текста */
+        }
+
+        .btn-danger {
+            background-color: #ff0018; /* Цвет кнопки */
+            color: #ffffff; /* Цвет текста кнопки */
+            border: none; /* Убираем границу кнопки */
+            padding: 10px 20px; /* Внутренние отступы кнопки */
+            border-radius: 5px; /* Скругление углов кнопки */
+            font-size: 18px; /* Размер текста кнопки */
+            transition: all 0.3s ease; /* Плавное изменение свойств */
+        }
+
+        .btn-danger:hover {
+            background-color: #e60016; /* Цвет кнопки при наведении */
+        }
     </style>
 </head>
 
@@ -94,7 +143,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/paymentsAndTransfers">Платежи и переводы</a>
                 </li>
-                <li class="nav-item">
+
+                <!-- Проверка ролей пользователя -->
+                <li class="nav-item" th:if="${#httpServletRequest.isUserInRole('ROLE_USER') or #httpServletRequest.isUserInRole('ROLE_ADMIN')}">
+                    <a class="nav-link" href="/logout">Выход</a>
+                </li>
+                <li class="nav-item" th:unless="${#httpServletRequest.isUserInRole('ROLE_USER') or #httpServletRequest.isUserInRole('ROLE_ADMIN')}">
                     <a class="nav-link" href="/login">Войти</a>
                 </li>
             </ul>
@@ -102,16 +156,18 @@
     </div>
 </nav>
 
-<!-- Содержимое страницы -->
-<div class="container mt-4">
-    <h1>Welcome to MTS Bank</h1>
-    <p>This is the main page of MTS Bank website.</p>
-    <div id="speechResult"></div>
-    <div class="fixed-bottom text-right m-3">
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#chatModal" aria-label="Открыть чат с МТС банком">
-            Открыть чат с МТС банком
-        </button>
 
+
+<div class="containers">
+    <!-- Блок приветствия -->
+    <div class="section">
+        <h1 class="section-title">Welcome to MTS Bank</h1>
+        <p class="section-content">This is the main page of MTS Bank website. To open the chat, click the button below or say "<strong>привет мтс</strong>".</p>
+        <div class="text-right fixed-bottom mb-3 mr-3">
+            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#chatModal">
+                Open MTS Bank Chat
+            </button>
+        </div>
     </div>
 </div>
 
@@ -166,7 +222,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
-    let recognition; // Объявляем переменную recognition в глобальной области видимости
+    let recognition;
 
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -178,24 +234,15 @@
 
         recognition.onresult = function (event) {
             let text = event.results[0][0].transcript.toLowerCase();
-            document.getElementById('speechResult').innerText = 'Вы сказали: ' + text;
+            sendMessage(text);
             if (text.includes('привет мтс')) {
                 $('#chatModal').modal('show');
-                const welcomeMessage = "Добро пожаловать в чат МТС Банка! Чем могу помочь?" + "\n" +
-                    "Я знаю команды 'перевести', 'баланс', 'платеж'. ";
-                const welcomeMessageElement = document.createElement('div');
-                welcomeMessageElement.textContent = welcomeMessage;
-                welcomeMessageElement.classList.add('message-bubble', 'server-message');
-                document.getElementById('modalMessageContainer').appendChild(welcomeMessageElement);
                 recognition.start();
-
             } else if (text.includes('стоп мтс')) {
                 $('#chatModal').modal('hide');
                 recognition.start();
-            } else if (text.includes('привет')) {
-                recognition.start();
             } else {
-                sendMessage(text);
+
             }
         };
 
@@ -212,7 +259,7 @@
         function sendMessage(message) {
             const messageElement = document.createElement('div');
             messageElement.textContent = message;
-            messageElement.classList.add('message-bubble', 'user-message'); // Добавляем класс 'user-message'
+            messageElement.classList.add('message-bubble', 'user-message');
             document.getElementById('modalMessageContainer').appendChild(messageElement);
 
             // Отправка результатов распознавания речи на сервер
@@ -237,16 +284,13 @@
         function toggleVoiceRecording() {
             const micIcon = document.getElementById('micIcon');
             if (isRecording) {
-                // Если уже ведется запись, останавливаем распознавание речи
                 recognition.stop();
                 isRecording = false;
                 micIcon.style.visibility = "visible";
-                micIcon.style.animationPlayState = "paused"; // Приостанавливаем анимацию
+                micIcon.style.animationPlayState = "paused";
             } else {
-                // Если запись не ведется, начинаем распознавание речи
                 recognition.start();
                 isRecording = true;
-                // Возобновляем анимацию
                 micIcon.style.animationPlayState = "running";
             }
         }

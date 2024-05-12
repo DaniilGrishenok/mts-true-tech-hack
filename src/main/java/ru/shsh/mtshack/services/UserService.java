@@ -24,25 +24,26 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AccountService  accountService;
     @Transactional
     public boolean createUser(User user) {
-        String phoneNumber = user.getPhoneNumber();
-        if (userRepository.findByPhoneNumber(phoneNumber) != null) {
-            log.warn("User with phone number {} already exists", phoneNumber);
+        String login = user.getUsername();
+        if (userRepository.findByPhoneNumber(user.getUsername()) != null) {
             return false;
         }
         user.setActive(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.getRoles().add(Role.ROLE_USER);
 
-        if (user.getAccounts() == null) {
-            user.setAccounts(new ArrayList<>());
-        }
-        createMainAccount(user);
+        Account account = new Account();
+        account.setUser(user);
+        account.setBalance(10000);
+        account.setName("Основной счет");
+        account.setCurrencyType(CurrencyType.RUBLE);
 
-
+        accountService.createAccount(account);
         userRepository.save(user);
-        log.info("Saving new User with phone number: {}", phoneNumber);
+        log.info("Saving new User with login: {}", login);
         return true;
     }
 

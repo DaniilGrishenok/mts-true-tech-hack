@@ -105,6 +105,6 @@ public class SpeechController {
 
     private boolean isValidPhoneNumber(String phoneNumber) {
 
-        return true; // Пример: всегда возвращает true для простоты демонстрации
+        return true; // всегд возвращает true для простоты демонстрации
     }
 }

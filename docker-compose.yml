@@ -15,7 +15,8 @@ services:
 
   # Сервис с вашим Java-приложением
   mtshack-app:
-    image: mtshack-image2:latest
+    build: .
+
     container_name: mtshack_container
     restart: always
     ports:

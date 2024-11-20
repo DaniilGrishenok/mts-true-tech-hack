@@ -15,7 +15,9 @@ import ru.shsh.mtshack.services.AccountService;
 
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,11 +27,12 @@ public class AccountController {
     private final AccountRepository accountRepository;
     private final SavingAccountRepository savingAccountRepository;
     private final UserRepository userRepository;
+    HashMap<String, String> map = new HashMap<>();
+
     @PostMapping("/accountsPage/createSavingsAccount")
     public String createAccount(@RequestParam("accountName") String accountName,
                                 @RequestParam("accountCurrency") String accountCurrency,
                                 @RequestParam("username") String username) {
-
         SavingsAccount savingAccount = new SavingsAccount();
         savingAccount.setName("Сберегательный счет");
         savingAccount.setCurrencyType(CurrencyType.valueOf(accountCurrency));
